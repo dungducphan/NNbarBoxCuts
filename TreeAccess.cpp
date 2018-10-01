@@ -287,7 +287,6 @@ void TreeAccess::Loop() {
     if (ientry < 0) break;
     nb = fChain->GetEntry(jentry);
     nbytes += nb;
-
     // Apply cut here
     if (fVisECut && !PassVisECut()) continue;
     if (fAvgEPerHitXViewCut && !PassAvgEPerHitXViewCut()) continue;
