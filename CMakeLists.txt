@@ -7,5 +7,5 @@ find_package(ROOT REQUIRED)
 
 include(${ROOT_USE_FILE})
 
-add_executable(OfflinePlotting main.cpp TreeAccess.cpp kNN.cpp kNN.h)
+add_executable(OfflinePlotting main.cpp TreeAccess.cpp)
 target_link_libraries(OfflinePlotting ${ROOT_LIBRARIES} Core Tree Hist)
