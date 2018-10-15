@@ -15,42 +15,42 @@ int main() {
   // Setting cuts
   std::string cutLevel = "";
 
-//
+
   cosmicTree->SetEnergyCut();
   signalTree->SetEnergyCut();
   cutLevel += "_VisE";
-//
+
   cosmicTree->SetTotHitCountYViewCut();
   signalTree->SetTotHitCountYViewCut();
   cutLevel += "_TotHitCountY";
-//
-//  cosmicTree->SetTotHitCountXViewCut();
-//  signalTree->SetTotHitCountXViewCut();
-//  cutLevel += "_TotHitCountX";
-//
-//  cosmicTree->SetEnergyPerHitYViewCut();
-//  signalTree->SetEnergyPerHitYViewCut();
-//  cutLevel += "_AvgEHitY";
-//
-//  cosmicTree->SetEnergyPerHitXViewCut();
-//  signalTree->SetEnergyPerHitXViewCut();
-//  cutLevel += "_AvgEHitX";
-//
+
+  cosmicTree->SetTotHitCountXViewCut();
+  signalTree->SetTotHitCountXViewCut();
+  cutLevel += "_TotHitCountX";
+
+  cosmicTree->SetEnergyPerHitYViewCut();
+  signalTree->SetEnergyPerHitYViewCut();
+  cutLevel += "_AvgEHitY";
+
+  cosmicTree->SetEnergyPerHitXViewCut();
+  signalTree->SetEnergyPerHitXViewCut();
+  cutLevel += "_AvgEHitX";
+
   cosmicTree->SetAverageYPositionCut();
   signalTree->SetAverageYPositionCut();
   cutLevel += "_AvgYPos";
-//
-//  cosmicTree->SetProng3DCounterCut();
-//  signalTree->SetProng3DCounterCut();
-//  cutLevel += "_Prong3D";
-//
-//  cosmicTree->SetMaximumProngEnergyLossPerLengthCut();
-//  signalTree->SetMaximumProngEnergyLossPerLengthCut();
-//  cutLevel += "_MaximumProngELoss";
-//
-//  cosmicTree->SetMinimumProngEnergyLossPerLengthCut();
-//  signalTree->SetMinimumProngEnergyLossPerLengthCut();
-//  cutLevel += "_MinimumProngELoss";
+
+  cosmicTree->SetProng3DCounterCut();
+  signalTree->SetProng3DCounterCut();
+  cutLevel += "_Prong3D";
+
+  cosmicTree->SetMaximumProngEnergyLossPerLengthCut();
+  signalTree->SetMaximumProngEnergyLossPerLengthCut();
+  cutLevel += "_MaximumProngELoss";
+
+  cosmicTree->SetMinimumProngEnergyLossPerLengthCut();
+  signalTree->SetMinimumProngEnergyLossPerLengthCut();
+  cutLevel += "_MinimumProngELoss";
 
   cosmicTree->Loop();
   signalTree->Loop();
