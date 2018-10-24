@@ -42,31 +42,31 @@ public :
 
   virtual void SetSignal();
 
-  virtual void SetEnergyCut();
+  virtual void SetEnergyCut(double lowerLim, double upperLim);
 
-  virtual void SetEnergyPerHitYViewCut();
+  virtual void SetEnergyPerHitYViewCut(double lowerLim, double upperLim);
 
-  virtual void SetEnergyPerHitXViewCut();
+  virtual void SetEnergyPerHitXViewCut(double lowerLim, double upperLim);
 
-  virtual void SetAverageYPositionCut();
+  virtual void SetAverageYPositionCut(double lowerLim, double upperLim);
 
-  virtual void SetTotHitCountXViewCut();
+  virtual void SetTotHitCountXViewCut(int lowerLim, int upperLim);
 
-  virtual void SetTotHitCountYViewCut();
+  virtual void SetTotHitCountYViewCut(int lowerLim, int upperLim);
 
   virtual void SetAreaRatioXViewCut();
 
   virtual void SetAreaRatioYViewCut();
 
-  virtual void SetProng3DCounterCut();
+  virtual void SetProng3DCounterCut(int lowerLim, int upperLim);
 
   virtual void SetProng2DCounterCut();
 
   virtual void SetAvgEPerHitCompositeCut();
 
-  virtual void SetMaximumProngEnergyLossPerLengthCut();
+  virtual void SetMaximumProngEnergyLossPerLengthCut(double lowerLim, double upperLim);
 
-  virtual void SetMinimumProngEnergyLossPerLengthCut();
+  virtual void SetMinimumProngEnergyLossPerLengthCut(double lowerLim, double upperLim);
 
   virtual void SetAverageProngEnergyLossPerLengthCut();
 
@@ -113,6 +113,25 @@ private:
   bool fMinimumProngEnergyLossPerLengthCut;
   bool fAverageProngEnergyLossPerLengthCut;
   bool fAvgEPerHitCompositeCut;
+
+  double fVisibleEnergyLowerLimit;
+  double fVisibleEnergyUpperLimit;
+  double fAvgEPerHitYViewLowerLimit;
+  double fAvgEPerHitYViewUpperLimit;
+  double fAvgEPerHitXViewLowerLimit;
+  double fAvgEPerHitXViewUpperLimit;
+  double fAvgYPositionLowerLimit;
+  double fAvgYPositionUpperLimit;
+  double fMaximumProngEnergyLossPerLengthLowerLimit;
+  double fMaximumProngEnergyLossPerLengthUpperLimit;
+  double fMinimumProngEnergyLossPerLengthLowerLimit;
+  double fMinimumProngEnergyLossPerLengthUpperLimit;
+  int fTotHitCountXViewLowerLimit;
+  int fTotHitCountXViewUpperLimit;
+  int fTotHitCountYViewLowerLimit;
+  int fTotHitCountYViewUpperLimit;
+  int fProng3DCounterLowerLimit;
+  int fProng3DCounterUpperLimit;
 
   bool fIsCosmic;
 

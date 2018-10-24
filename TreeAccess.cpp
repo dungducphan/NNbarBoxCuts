@@ -228,11 +228,11 @@ void TreeAccess::SetSignal() {
 }
 
 bool TreeAccess::PassVisECut() {
-  return ((TotalVisibleEnergy >= 1.0) && (TotalVisibleEnergy <= 1.5));
+  return ((TotalVisibleEnergy >= fVisibleEnergyLowerLimit) && (TotalVisibleEnergy <= fVisibleEnergyUpperLimit));
 }
 
 bool TreeAccess::PassProng3DCounterCut() {
-  return (Prong3DCounter >= 3);
+  return ((Prong3DCounter >= fProng3DCounterLowerLimit) && (Prong3DCounter <= fProng3DCounterUpperLimit));
 }
 
 bool TreeAccess::PassProng2DCounterCut() {
@@ -240,23 +240,23 @@ bool TreeAccess::PassProng2DCounterCut() {
 }
 
 bool TreeAccess::PassAvgEPerHitYViewCut() {
-  return (AverageEnergyPerHitYView >= 0.015);
+  return ((AverageEnergyPerHitYView >= fAvgEPerHitYViewLowerLimit) && (AverageEnergyPerHitYView <= fAvgEPerHitYViewUpperLimit));
 }
 
 bool TreeAccess::PassAvgEPerHitXViewCut() {
-  return (AverageEnergyPerHitXView >= 0.0125);
+  return ((AverageEnergyPerHitXView >= fAvgEPerHitXViewLowerLimit) && (AverageEnergyPerHitXView <= fAvgEPerHitXViewUpperLimit));
 }
 
 bool TreeAccess::PassAvgYPositionCut() {
-  return (AverageYposition <= 200) && (AverageYposition >= -550);
+  return ((AverageYposition <= fAvgYPositionUpperLimit) && (AverageYposition >= fAvgYPositionLowerLimit));
 }
 
 bool TreeAccess::PassTotHitCountXViewCut() {
-  return (TotalHitCountInXView <= 50) && (TotalHitCountInXView >= 15);
+  return (TotalHitCountInXView <= fTotHitCountXViewUpperLimit) && (TotalHitCountInXView >= fTotHitCountXViewLowerLimit);
 }
 
 bool TreeAccess::PassTotHitCountYViewCut() {
-  return (TotalHitCountInYView <= 50) && (TotalHitCountInYView >= 15);
+  return (TotalHitCountInYView <= fTotHitCountYViewUpperLimit) && (TotalHitCountInYView >= fTotHitCountYViewLowerLimit);
 }
 
 bool TreeAccess::PassAreaRatioXViewCut() {
@@ -268,11 +268,13 @@ bool TreeAccess::PassAreaRatioYViewCut() {
 }
 
 bool TreeAccess::PassMaximumProngEnergyLossPerLengthCut() {
-  return (MaximumProngEnergyLossPerLength >= 0.004);
+  return ((MaximumProngEnergyLossPerLength >= fMaximumProngEnergyLossPerLengthLowerLimit)
+          && (MaximumProngEnergyLossPerLength <= fMaximumProngEnergyLossPerLengthUpperLimit));
 }
 
 bool TreeAccess::PassMinimumProngEnergyLossPerLengthCut() {
-  return (MinimumProngEnergyLossPerLength >= 0.0005);
+  return ((MinimumProngEnergyLossPerLength >= fMinimumProngEnergyLossPerLengthLowerLimit)
+          && (MinimumProngEnergyLossPerLength <= fMinimumProngEnergyLossPerLengthUpperLimit));
 }
 
 bool TreeAccess::PassAverageProngEnergyLossPerLengthCut() {
@@ -283,11 +285,15 @@ bool TreeAccess::PassAvgEPerHitCompositeCut() {
   return PassAvgEPerHitYViewCut() && PassAvgEPerHitXViewCut();
 }
 
-void TreeAccess::SetEnergyCut() {
+void TreeAccess::SetEnergyCut(double lowerLim, double upperLim) {
+  fVisibleEnergyLowerLimit = lowerLim;
+  fVisibleEnergyUpperLimit = upperLim;
   fVisECut = true;
 }
 
-void TreeAccess::SetProng3DCounterCut() {
+void TreeAccess::SetProng3DCounterCut(int lowerLim, int upperLim) {
+  fProng3DCounterLowerLimit = lowerLim;
+  fProng3DCounterUpperLimit = upperLim;
   fProng3DCounterCut = true;
 }
 
@@ -295,23 +301,33 @@ void TreeAccess::SetProng2DCounterCut() {
   fProng2DCounterCut = true;
 }
 
-void TreeAccess::SetEnergyPerHitYViewCut() {
+void TreeAccess::SetEnergyPerHitYViewCut(double lowerLim, double upperLim) {
+  fAvgEPerHitYViewLowerLimit = lowerLim;
+  fAvgEPerHitYViewUpperLimit = upperLim;
   fAvgEPerHitYViewCut = true;
 }
 
-void TreeAccess::SetEnergyPerHitXViewCut() {
+void TreeAccess::SetEnergyPerHitXViewCut(double lowerLim, double upperLim) {
+  fAvgEPerHitXViewLowerLimit = lowerLim;
+  fAvgEPerHitXViewUpperLimit = upperLim;
   fAvgEPerHitXViewCut = true;
 }
 
-void TreeAccess::SetAverageYPositionCut() {
+void TreeAccess::SetAverageYPositionCut(double lowerLim, double upperLim) {
+  fAvgYPositionLowerLimit = lowerLim;
+  fAvgYPositionUpperLimit = upperLim;
   fAvgYPositionCut = true;
 }
 
-void TreeAccess::SetTotHitCountXViewCut() {
+void TreeAccess::SetTotHitCountXViewCut(int lowerLim, int upperLim) {
+  fTotHitCountXViewLowerLimit = lowerLim;
+  fTotHitCountXViewUpperLimit = upperLim;
   fTotHitCountXViewCut = true;
 }
 
-void TreeAccess::SetTotHitCountYViewCut() {
+void TreeAccess::SetTotHitCountYViewCut(int lowerLim, int upperLim) {
+  fTotHitCountYViewLowerLimit = lowerLim;
+  fTotHitCountYViewUpperLimit = upperLim;
   fTotHitCountYViewCut = true;
 }
 
@@ -327,11 +343,15 @@ void TreeAccess::SetAvgEPerHitCompositeCut() {
   fAvgEPerHitCompositeCut = true;
 }
 
-void TreeAccess::SetMaximumProngEnergyLossPerLengthCut() {
+void TreeAccess::SetMaximumProngEnergyLossPerLengthCut(double lowerLim, double upperLim) {
+  fMaximumProngEnergyLossPerLengthLowerLimit = lowerLim;
+  fMaximumProngEnergyLossPerLengthUpperLimit = upperLim;
   fMaximumProngEnergyLossPerLengthCut = true;
 }
 
-void TreeAccess::SetMinimumProngEnergyLossPerLengthCut() {
+void TreeAccess::SetMinimumProngEnergyLossPerLengthCut(double lowerLim, double upperLim) {
+  fMinimumProngEnergyLossPerLengthLowerLimit = lowerLim;
+  fMinimumProngEnergyLossPerLengthUpperLimit = upperLim;
   fMinimumProngEnergyLossPerLengthCut = true;
 }
 

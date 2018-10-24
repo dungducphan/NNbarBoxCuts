@@ -1,56 +1,126 @@
 #include <iostream>
+#include <fstream>
+#include <string>
+
 #include "TreeAccess.h"
 #include "Style.C"
+
+#include <json.h>
 
 #include <TLegend.h>
 #include <TF1.h>
 
-int main() {
+int main(int argc, char* argv[]) {
   GeneralStyle();
 
-  TreeAccess *cosmicTree = new TreeAccess("../Cosmic_0.Hist.root");
-  TreeAccess *signalTree = new TreeAccess("../Signal.NNbar_Analysis_Hist.root");
+  std::string fileName;
+  if (argc < 3) {
+    std::cerr << "Usage: " << argv[0] << " -f <Config File>" << std::endl;
+    return 1;
+  } else {
+    fileName = argv[2];
+  }
+
+  Json::Value root;
+  std::ifstream configFile(Form("%s", fileName.c_str()), std::ifstream::binary);
+  configFile >> root;
+
+  int signal_decay_channel      = root.get("signal_decay_channel", "0").asInt();
+
+  bool set_visible_energy_cut   = root.get("set_visible_energy_cut",   "false").asBool();
+  bool set_avg_hit_energy_x_cut = root.get("set_avg_hit_energy_x_cut", "false").asBool();
+  bool set_avg_hit_energy_y_cut = root.get("set_avg_hit_energy_y_cut", "false").asBool();
+  bool set_tot_hit_count_x_cut  = root.get("set_tot_hit_count_x_cut",  "false").asBool();
+  bool set_tot_hit_count_y_cut  = root.get("set_tot_hit_count_y_cut",  "false").asBool();
+  bool set_avg_y_pos_cut        = root.get("set_avg_y_pos_cut",        "false").asBool();
+  bool set_prong3d_count_cut    = root.get("set_prong3d_count_cut",    "false").asBool();
+  bool set_max_prong_dedx_cut   = root.get("set_max_prong_dedx_cut",   "false").asBool();
+  bool set_min_prong_dedx_cut   = root.get("set_min_prong_dedx_cut",   "false").asBool();
+
+  int prong3d_count_lower       = root.get("prong3d_count_lower", "0").asInt();
+  int prong3d_count_upper       = root.get("prong3d_count_upper", "20").asInt();
+
+  int tot_hit_count_x_lower     = root.get("tot_hit_count_x_lower", "-1E30").asInt();
+  int tot_hit_count_x_upper     = root.get("tot_hit_count_x_upper", "+1E30").asInt();
+  int tot_hit_count_y_lower     = root.get("tot_hit_count_y_lower", "-1E30").asInt();
+  int tot_hit_count_y_upper     = root.get("tot_hit_count_y_upper", "+1E30").asInt();
+
+  double visible_energy_lower   = root.get("visible_energy_lower", "1").asDouble();
+  double visible_energy_upper   = root.get("visible_energy_upper", "1.5").asDouble();
+
+  double avg_hit_energy_x_lower = root.get("avg_hit_energy_x_lower", "0.015").asDouble();
+  double avg_hit_energy_y_lower = root.get("avg_hit_energy_y_lower", "0.015").asDouble();
+  double avg_hit_energy_x_upper = root.get("avg_hit_energy_x_upper", "+1E30").asDouble();
+  double avg_hit_energy_y_upper = root.get("avg_hit_energy_y_upper", "+1E30").asDouble();
+
+  double avg_y_pos_lower        = root.get("avg_y_pos_lower", "-1E10").asDouble();
+  double avg_y_pos_upper        = root.get("avg_y_pos_upper", "200").asDouble();
+
+  double max_prong_dedx_lower   = root.get("max_prong_dedx_lower", "0").asDouble();
+  double max_prong_dedx_upper   = root.get("max_prong_dedx_upper", "1E30").asDouble();
+  double min_prong_dedx_lower   = root.get("min_prong_dedx_lower", "0").asDouble();
+  double min_prong_dedx_upper   = root.get("min_prong_dedx_upper", "1E30").asDouble();
+
+  TreeAccess *cosmicTree = new TreeAccess("../Data/Cosmic.root");
+  TreeAccess *signalTree = new TreeAccess(Form("../Data/Signal.Ch%i.root", signal_decay_channel));
   signalTree->SetSignal();
 
   // Setting cuts
   std::string cutLevel = "";
 
+  if (set_visible_energy_cut) {
+    cosmicTree->SetEnergyCut(visible_energy_lower, visible_energy_upper);
+    signalTree->SetEnergyCut(visible_energy_lower, visible_energy_upper);
+    cutLevel += "_VisE";
+  }
 
-  cosmicTree->SetEnergyCut();
-  signalTree->SetEnergyCut();
-  cutLevel += "_VisE";
+  if (set_tot_hit_count_y_cut) {
+    cosmicTree->SetTotHitCountYViewCut(tot_hit_count_y_lower, tot_hit_count_y_upper);
+    signalTree->SetTotHitCountYViewCut(tot_hit_count_y_lower, tot_hit_count_y_upper);
+    cutLevel += "_TotHitCountY";
+  }
 
-  cosmicTree->SetTotHitCountYViewCut();
-  signalTree->SetTotHitCountYViewCut();
-  cutLevel += "_TotHitCountY";
+  if (set_tot_hit_count_x_cut) {
+    cosmicTree->SetTotHitCountXViewCut(tot_hit_count_x_lower, tot_hit_count_x_upper);
+    signalTree->SetTotHitCountXViewCut(tot_hit_count_x_lower, tot_hit_count_x_upper);
+    cutLevel += "_TotHitCountX";
+  }
 
-  cosmicTree->SetTotHitCountXViewCut();
-  signalTree->SetTotHitCountXViewCut();
-  cutLevel += "_TotHitCountX";
+  if (set_avg_hit_energy_y_cut) {
+    cosmicTree->SetEnergyPerHitYViewCut(avg_hit_energy_y_lower, avg_hit_energy_y_upper);
+    signalTree->SetEnergyPerHitYViewCut(avg_hit_energy_y_lower, avg_hit_energy_y_upper);
+    cutLevel += "_AvgEHitY";
+  }
 
-  cosmicTree->SetEnergyPerHitYViewCut();
-  signalTree->SetEnergyPerHitYViewCut();
-  cutLevel += "_AvgEHitY";
+  if (set_avg_hit_energy_x_cut) {
+    cosmicTree->SetEnergyPerHitXViewCut(avg_hit_energy_x_lower, avg_hit_energy_x_upper);
+    signalTree->SetEnergyPerHitXViewCut(avg_hit_energy_x_lower, avg_hit_energy_x_upper);
+    cutLevel += "_AvgEHitX";
+  }
 
-  cosmicTree->SetEnergyPerHitXViewCut();
-  signalTree->SetEnergyPerHitXViewCut();
-  cutLevel += "_AvgEHitX";
+  if (set_avg_y_pos_cut) {
+    cosmicTree->SetAverageYPositionCut(avg_y_pos_lower, avg_y_pos_upper);
+    signalTree->SetAverageYPositionCut(avg_y_pos_lower, avg_y_pos_upper);
+    cutLevel += "_AvgYPos";
+  }
 
-  cosmicTree->SetAverageYPositionCut();
-  signalTree->SetAverageYPositionCut();
-  cutLevel += "_AvgYPos";
+  if (set_prong3d_count_cut) {
+    cosmicTree->SetProng3DCounterCut(prong3d_count_lower, prong3d_count_upper);
+    signalTree->SetProng3DCounterCut(prong3d_count_lower, prong3d_count_upper);
+    cutLevel += "_Prong3D";
+  }
 
-  cosmicTree->SetProng3DCounterCut();
-  signalTree->SetProng3DCounterCut();
-  cutLevel += "_Prong3D";
+  if (set_max_prong_dedx_cut) {
+    cosmicTree->SetMaximumProngEnergyLossPerLengthCut(max_prong_dedx_lower, max_prong_dedx_upper);
+    signalTree->SetMaximumProngEnergyLossPerLengthCut(max_prong_dedx_lower, max_prong_dedx_upper);
+    cutLevel += "_MaximumProngELoss";
+  }
 
-  cosmicTree->SetMaximumProngEnergyLossPerLengthCut();
-  signalTree->SetMaximumProngEnergyLossPerLengthCut();
-  cutLevel += "_MaximumProngELoss";
-
-  cosmicTree->SetMinimumProngEnergyLossPerLengthCut();
-  signalTree->SetMinimumProngEnergyLossPerLengthCut();
-  cutLevel += "_MinimumProngELoss";
+  if (set_min_prong_dedx_cut) {
+    cosmicTree->SetMinimumProngEnergyLossPerLengthCut(min_prong_dedx_lower, min_prong_dedx_upper);
+    signalTree->SetMinimumProngEnergyLossPerLengthCut(min_prong_dedx_lower, min_prong_dedx_upper);
+    cutLevel += "_MinimumProngELoss";
+  }
 
   cosmicTree->Loop();
   signalTree->Loop();
@@ -117,7 +187,7 @@ int main() {
     leg->AddEntry(hist2Plot_signal, "Signal", "l");
     leg->Draw();
 
-    std::string plotFolder = "../Plots";
+    std::string plotFolder = Form("../Plots/Channel_%i", signal_decay_channel);
     c->SetFixedAspectRatio();
     c->SaveAs(Form("%s/%s%s.pdf", plotFolder.c_str(), VariableName.c_str(), cutLevel.c_str()));
     delete c;
