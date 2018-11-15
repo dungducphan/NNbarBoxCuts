@@ -71,55 +71,55 @@ int main(int argc, char* argv[]) {
   if (set_visible_energy_cut) {
     cosmicTree->SetEnergyCut(visible_energy_lower, visible_energy_upper);
     signalTree->SetEnergyCut(visible_energy_lower, visible_energy_upper);
-    cutLevel += "_VisE";
+    cutLevel += "VisE.";
   }
 
   if (set_tot_hit_count_y_cut) {
     cosmicTree->SetTotHitCountYViewCut(tot_hit_count_y_lower, tot_hit_count_y_upper);
     signalTree->SetTotHitCountYViewCut(tot_hit_count_y_lower, tot_hit_count_y_upper);
-    cutLevel += "_TotHitCountY";
+    cutLevel += "TotHitCountY.";
   }
 
   if (set_tot_hit_count_x_cut) {
     cosmicTree->SetTotHitCountXViewCut(tot_hit_count_x_lower, tot_hit_count_x_upper);
     signalTree->SetTotHitCountXViewCut(tot_hit_count_x_lower, tot_hit_count_x_upper);
-    cutLevel += "_TotHitCountX";
+    cutLevel += "TotHitCountX.";
   }
 
   if (set_avg_hit_energy_y_cut) {
     cosmicTree->SetEnergyPerHitYViewCut(avg_hit_energy_y_lower, avg_hit_energy_y_upper);
     signalTree->SetEnergyPerHitYViewCut(avg_hit_energy_y_lower, avg_hit_energy_y_upper);
-    cutLevel += "_AvgEHitY";
+    cutLevel += "AvgEHitY.";
   }
 
   if (set_avg_hit_energy_x_cut) {
     cosmicTree->SetEnergyPerHitXViewCut(avg_hit_energy_x_lower, avg_hit_energy_x_upper);
     signalTree->SetEnergyPerHitXViewCut(avg_hit_energy_x_lower, avg_hit_energy_x_upper);
-    cutLevel += "_AvgEHitX";
+    cutLevel += "AvgEHitX.";
   }
 
   if (set_avg_y_pos_cut) {
     cosmicTree->SetAverageYPositionCut(avg_y_pos_lower, avg_y_pos_upper);
     signalTree->SetAverageYPositionCut(avg_y_pos_lower, avg_y_pos_upper);
-    cutLevel += "_AvgYPos";
+    cutLevel += "AvgYPos.";
   }
 
   if (set_prong3d_count_cut) {
     cosmicTree->SetProng3DCounterCut(prong3d_count_lower, prong3d_count_upper);
     signalTree->SetProng3DCounterCut(prong3d_count_lower, prong3d_count_upper);
-    cutLevel += "_Prong3D";
+    cutLevel += "Prong3D.";
   }
 
   if (set_max_prong_dedx_cut) {
     cosmicTree->SetMaximumProngEnergyLossPerLengthCut(max_prong_dedx_lower, max_prong_dedx_upper);
     signalTree->SetMaximumProngEnergyLossPerLengthCut(max_prong_dedx_lower, max_prong_dedx_upper);
-    cutLevel += "_MaximumProngELoss";
+    cutLevel += "MaximumProngELoss.";
   }
 
   if (set_min_prong_dedx_cut) {
     cosmicTree->SetMinimumProngEnergyLossPerLengthCut(min_prong_dedx_lower, min_prong_dedx_upper);
     signalTree->SetMinimumProngEnergyLossPerLengthCut(min_prong_dedx_lower, min_prong_dedx_upper);
-    cutLevel += "_MinimumProngELoss";
+    cutLevel += "MinimumProngELoss.";
   }
 
   cosmicTree->Loop();
@@ -156,8 +156,8 @@ int main(int argc, char* argv[]) {
     TH1D *hist2Plot_signal = (TH1D *) signalTree->GetTH1DByName(VariableName)->Clone(AlternativeName_Signal.c_str());
     signalTree->Terminate(VariableName.c_str());
 
-    TLine *line_A = new TLine(200, 0, 200, 1.5);
-    TLine *line_B = new TLine(1.5, 0, 1.5, 1.5);
+    TLine *line_A = new TLine(0.0005, 0, 0.0005, 1.5);
+    TLine *line_B = new TLine(0, 0, 0, 1.5);
     line_A->SetLineColor(kBlue);
     line_A->SetLineStyle(kDashed);
     line_A->SetLineWidth(3);
@@ -189,7 +189,8 @@ int main(int argc, char* argv[]) {
 
     std::string plotFolder = Form("../Plots/Channel_%i", signal_decay_channel);
     c->SetFixedAspectRatio();
-    c->SaveAs(Form("%s/%s%s.pdf", plotFolder.c_str(), VariableName.c_str(), cutLevel.c_str()));
+//    c->SaveAs(Form("%s/%s%s.pdf", plotFolder.c_str(), cutLevel.c_str(), VariableName.c_str()));
+    c->SaveAs(Form("%s/%s%s.pdf", plotFolder.c_str(), "All.", VariableName.c_str()));
     delete c;
   }
 

@@ -367,28 +367,12 @@ void TreeAccess::Loop() {
   Long64_t nbytes = 0, nb = 0;
   unsigned int survCount = 0;
 
-  std::ofstream dataOut("data.dat");
+  std::ofstream dataOut(Form("%s_data.csv", fIsCosmic ? "Cosmic" : "Signal"));
   for (Long64_t jentry = 0; jentry < nentries; jentry++) {
     Long64_t ientry = LoadTree(jentry);
     if (ientry < 0) break;
     nb = fChain->GetEntry(jentry);
     nbytes += nb;
-//    dataOut << Form("%.5f, %.5f, %.5f, %.5f, %.5f, %d, %d, %.5f, %.5f, %.5f, %.5f, %.5f, %.5f, %.5f, %d \n",
-//                    TotalVisibleEnergy,
-//                    TotalHitCountInXView,
-//                    TotalHitCountInYView,
-//                    AverageEnergyPerHitXView,
-//                    AverageEnergyPerHitYView,
-//                    Prong2DCounter,
-//                    Prong3DCounter,
-//                    HitCountXYDifference,
-//                    MaximumProngEnergyLossPerLength,
-//                    MinimumProngEnergyLossPerLength,
-//                    AverageProngEnergyLossPerLength,
-//                    ConvexHullAreaXV / MinimalEnclosingCircleAreaXV,
-//                    ConvexHullAreaYV / MinimalEnclosingCircleAreaYV,
-//                    AverageYposition,
-//                    0);
 
     // Apply cut here
     if (fVisECut && !PassVisECut()) continue;
@@ -405,6 +389,23 @@ void TreeAccess::Loop() {
     if (fMinimumProngEnergyLossPerLengthCut && !PassMinimumProngEnergyLossPerLengthCut()) continue;
     if (fAverageProngEnergyLossPerLengthCut && !PassAverageProngEnergyLossPerLengthCut()) continue;
     survCount++;
+
+    dataOut << Form("%.5f, %.5f, %.5f, %.5f, %.5f, %d, %d, %.5f, %.5f, %.5f, %.5f, %.5f, %.5f, %.5f, %d \n",
+                    TotalVisibleEnergy,
+                    TotalHitCountInXView,
+                    TotalHitCountInYView,
+                    AverageEnergyPerHitXView,
+                    AverageEnergyPerHitYView,
+                    Prong2DCounter,
+                    Prong3DCounter,
+                    HitCountXYDifference,
+                    MaximumProngEnergyLossPerLength,
+                    MinimumProngEnergyLossPerLength,
+                    AverageProngEnergyLossPerLength,
+                    ConvexHullAreaXV / MinimalEnclosingCircleAreaXV,
+                    ConvexHullAreaYV / MinimalEnclosingCircleAreaYV,
+                    AverageYposition,
+                    fIsCosmic ? 1 : 0);
 
 //    if (fIsCosmic) {
 //      std::cout << "Run #" << RunNumber << ". Subrun #" << SubrunNumber << ". Event #" << EventNumber
